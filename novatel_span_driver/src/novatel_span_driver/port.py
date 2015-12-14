@@ -89,7 +89,6 @@ class Port(threading.Thread):
                                  (header.translator().size, header_length))
 
         except (socket.timeout, serial.SerialTimeoutException) as e:
-        # except socket.timeout:
             return None, None
 
         header_str = self.sock.recv(header_length)

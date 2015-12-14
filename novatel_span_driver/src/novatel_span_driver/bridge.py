@@ -54,9 +54,6 @@ monitor = Monitor(ports)
 
 
 def init():
-    # ip = rospy.get_param('~ip', DEFAULT_IP)
-    # data_port = rospy.get_param('~port', DEFAULT_PORT)
-
     # Pass this parameter to use pcap data rather than a socket to a device.
     # For testing the node itself--to exercise downstream algorithms, use a bag.
     pcap_file_name = rospy.get_param('~pcap_file', False)
@@ -79,9 +76,6 @@ def init():
 
 
 def create_sock(name):
-# def create_sock(name, ip, port):
-    # ip = rospy.get_param('~ip', DEFAULT_IP)
-    # data_port = rospy.get_param('~port', DEFAULT_PORT)
     try:
         if rospy.has_param('~ip_address'):
             ip = rospy.get_param('~ip_address')
@@ -95,8 +89,9 @@ def create_sock(name):
             baud = rospy.get_param('~serial_baud', 9600)
             sock = serial.Serial(port=port, baudrate=baud, timeout=SOCKET_TIMEOUT)
             rospy.loginfo("Successfully connected to %%s port at %s:%d" % (port, baud) % name)
-            # TODO: Fix this monkey patch 
-            # define aliases for make serial obj be compatible with socket obj
+
+            # TODO: Fix this monkey patch
+            # make methods dynamically for make serial obj be compatible with socket obj
             from types import MethodType
             sock.recv = MethodType(serial.Serial.read, sock, serial.Serial)
             sock.send = MethodType(serial.Serial.write, sock, serial.Serial)
@@ -109,38 +104,7 @@ def create_sock(name):
             ip_port = (ip, port)
             sock.connect(ip_port)
             rospy.loginfo("Successfully connected to %%s port at %s:%d" % ip_port % name)
-        ## sock = serial.Serial(port="/dev/ttyUSB1", baudrate=9600)
-        # sock = serial.Serial(port="/dev/ttyUSB0", baudrate=9600, timeout=SOCKET_TIMEOUT)
-        # from types import MethodType
-        # def my_recv(self, *args, **kwargs):
-        #     print "called my_recv"
-        #     ret = self.read(*args, **kwargs)
-        #     print "len:",len(ret),"  hex:",repr(ret)
-        #     # print "len:",len(ret),"  hex:",map(ord,ret)
-        #     # print ret
-        #     return ret
-        #
-        # def my_send(self, *args, **kwargs):
-        #     print "called my_send"
-        #     print args, kwargs
-        #     # print "len:", len(ret), "  hex:", map(ord,ret)
-        #     # print ret
-        #     ret = self.write(*args, **kwargs)
-        #     # print "len:",len(ret),"  hex:",repr(ret)
-        #     return ret
-        #
-        # # sock.recv = MethodType(serial.Serial.read, sock, serial.Serial)
-        # sock.recv = MethodType(my_recv, sock, serial.Serial)
-        # # sock.send = MethodType(serial.Serial.write, sock, serial.Serial)
-        # sock.send = MethodType(my_send, sock, serial.Serial)
-        # sock.settimeout = MethodType(lambda *args, **kwargs: None, sock, serial.Serial)
-        # sock.shutdown = MethodType(lambda *args, **kwargs: None, sock, serial.Serial)
-        # # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # # ip_port = (ip, port)
-        # # sock.connect(ip_port)
-        # # rospy.loginfo("Successfully connected to %%s port at %s:%d" % ip_port % name)
     except (socket.error, serial.SerialException) as e:
-    # except socket.error as e:
         # rospy.logfatal("Couldn't connect to %%s port at %s:%d: %%s" % ip_port % (name, str(e)))
         rospy.logfatal("Couldn't connect to port at{0}:{1}".format(name, str(e)))
         exit(1)
@@ -232,6 +196,6 @@ def shutdown():
         port.join()
         rospy.loginfo("Port %s thread finished." % name)
     for sock in socks:
-        # sock.shutdown(socket.SHUT_RDWR)
+        sock.shutdown(socket.SHUT_RDWR)
         sock.close()
     rospy.loginfo("Sockets closed.")
