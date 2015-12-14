@@ -95,6 +95,7 @@ def create_sock(name):
             baud = rospy.get_param('~serial_baud', 9600)
             sock = serial.Serial(port=port, baudrate=baud, timeout=SOCKET_TIMEOUT)
             rospy.loginfo("Successfully connected to %%s port at %s:%d" % (port, baud) % name)
+            # TODO: Fix this monkey patch 
             # define aliases for make serial obj be compatible with socket obj
             from types import MethodType
             sock.recv = MethodType(serial.Serial.read, sock, serial.Serial)
