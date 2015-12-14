@@ -97,7 +97,7 @@ def create_sock(name):
             sock.send = MethodType(serial.Serial.write, sock, serial.Serial)
             sock.settimeout = MethodType(lambda *args, **kwargs: None, sock, serial.Serial)
             sock.shutdown = MethodType(lambda *args, **kwargs: None, sock, serial.Serial)
-        else :
+        else:
             ip = rospy.get_param('~ip', DEFAULT_IP)
             data_port = rospy.get_param('~port', DEFAULT_PORT)
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -154,6 +154,7 @@ def create_test_sock(pcap_filename):
     data_io = StringIO(''.join(body_list))
 
     class MockSocket(object):
+
         def recv(self, byte_count):
             rospy.sleep(0.002)
             data = data_io.read(byte_count)
