@@ -35,6 +35,7 @@ from translator import Translator
 # Python
 import threading
 import socket
+import serial
 import struct
 from cStringIO import StringIO
 
@@ -87,7 +88,8 @@ class Port(threading.Thread):
                 raise ValueError("Bad header length. Expected %d, got %d" %
                                  (header.translator().size, header_length))
 
-        except socket.timeout:
+        except (socket.timeout, serial.SerialTimeoutException) as e:
+        # except socket.timeout:
             return None, None
 
         header_str = self.sock.recv(header_length)
