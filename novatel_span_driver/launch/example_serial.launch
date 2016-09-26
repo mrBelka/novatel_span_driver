@@ -8,9 +8,9 @@
     <param name="serial_baud" value="$(arg serial_baud)" />
     <rosparam ns="configuration">
       log_request:
-        inspvaxb: 0.5
-        bestposb: 0.5
-        corrimudatab: 0.5
+        inspvaxb: 1
+        bestposb: 1
+        corrimudatab: 1
         inscovb: 1
 # The example setup commands below apply to a Clearpath Robotics Husky running
 # SPAN with dual antennas. Run the SPAN setup wizard on your own platform to generate
